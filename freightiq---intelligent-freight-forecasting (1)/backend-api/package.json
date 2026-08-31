@@ -1,0 +1,30 @@
+{
+  "name": "freightiq-backend-api",
+  "version": "1.0.0",
+  "description": "FreightIQ Node.js Express API & Orchestration Engine",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "axios": "^1.7.9",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.2"
+  }
+}
