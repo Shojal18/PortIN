@@ -21,7 +21,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   title: customTitle,
   subtitle: customSubtitle
 }) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
@@ -236,6 +236,19 @@ export const TopBar: React.FC<TopBarProps> = ({
             </p>
           </div>
         </div>
+
+        {/* Log out Button */}
+        <button
+          onClick={logout}
+          className={`p-1.5 rounded-[5px] transition cursor-pointer border text-xs flex items-center gap-1 font-medium ${
+            isLight
+              ? 'text-[#71717A] hover:text-[#18181B] hover:bg-[#EAEAEB] bg-white border-[#E4E4E7]'
+              : 'text-gray-600 hover:text-black hover:bg-gray-100 bg-white border-[#D0D0D0]'
+          }`}
+          title="Log out of PortIN"
+        >
+          <span className="hidden sm:inline">Log out</span>
+        </button>
       </div>
     </header>
   );

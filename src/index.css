@@ -7,6 +7,14 @@
 :root,
 [data-theme="light"],
 .light {
+  /* PortIN Core Brand Color System */
+  --portin-primary: #52796A;
+  --portin-secondary: #BAC5AC;
+  --portin-dark: #212528;
+  --portin-surface: #E5E5E5;
+  --portin-border: #DFDFDF;
+  --portin-gradient: linear-gradient(135deg, #52796A 0%, #BAC5AC 100%);
+
   --bg-page: #F4F4F5;          /* soft off-white / very light gray, NOT pure white */
   --bg-surface: #FFFFFF;       /* content surfaces: white */
   --bg-subtle: #F8F8F9;        /* secondary inner sections: extremely light gray */

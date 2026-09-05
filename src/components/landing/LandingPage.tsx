@@ -1,98 +1,47 @@
-import React, { useState } from 'react';
-import { LandingNavigation } from './LandingNavigation';
+import React from 'react';
 import { HeroSection } from './HeroSection';
-import { KplerSolutionsSection } from './KplerSolutionsSection';
-import { BacktestedAnalyticsSection } from './BacktestedAnalyticsSection';
-import { VoyageAnalyticsPreviewSection } from './VoyageAnalyticsPreviewSection';
-import { ThreePillarsSection } from './ThreePillarsSection';
-import { ForecastingSection } from './ForecastingSection';
-import { VesselIntelligenceSection } from './VesselIntelligenceSection';
-import { PortIntelligenceSection } from './PortIntelligenceSection';
-import { IndustriesGridSection } from './IndustriesGridSection';
-import { IntegrationsHubSection } from './IntegrationsHubSection';
-import { TestimonialsSection } from './TestimonialsSection';
-import { CostAndRiskSection } from './CostAndRiskSection';
-import { TechnologyAndTransparencySection } from './TechnologyAndTransparencySection';
+import { SectionTwo } from './SectionTwo';
+import { SectionThree } from './SectionThree';
 import { LandingFooter } from './LandingFooter';
-import { DemoRequestModal } from './DemoRequestModal';
+import { NavTab } from '../../types';
 
 interface LandingPageProps {
-  onEnterApp: () => void;
-  onOpenLogin: () => void;
+  onNavigate?: (tab: NavTab) => void;
+  onOpenLogin?: () => void;
+  onLogout?: () => void;
+  isAuthenticated?: boolean;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
-  onEnterApp,
-  onOpenLogin
+  onNavigate,
+  onOpenLogin,
+  onLogout,
+  isAuthenticated = false,
 }) => {
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState<boolean>(false);
-
-  const handleOpenDemo = () => {
-    setIsDemoModalOpen(true);
-  };
-
-  const handleCloseDemo = () => {
-    setIsDemoModalOpen(false);
-  };
-
   return (
-    <div className="min-h-screen bg-[#071522] text-[#F2F6F8] selection:bg-[#E05252] selection:text-white font-sans">
-      {/* Top sticky navigation */}
-      <LandingNavigation
-        onEnterApp={onEnterApp}
+    <div id="landing-page-root" className="w-full min-h-screen bg-[#060D1E] flex flex-col selection:bg-[#F59E0B]/30 selection:text-white">
+      {/* 1. HERO SECTION — FULL SCREEN */}
+      <HeroSection
+        onNavigate={onNavigate}
         onOpenLogin={onOpenLogin}
-        onOpenDemo={handleOpenDemo}
+        onLogout={onLogout}
+        isAuthenticated={isAuthenticated}
       />
 
-      <main>
-        {/* 1. Kpler-Grade Hero Section with Live Route Schematic */}
-        <HeroSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
+      {/* 2. OPERATIONAL SHIPMENT SHOWCASE SECTION */}
+      <SectionTwo
+        onNavigate={onNavigate}
+        onOpenLogin={onOpenLogin}
+        isAuthenticated={isAuthenticated}
+      />
 
-        {/* 2. Kpler-Style Tabbed Solutions Showcase */}
-        <KplerSolutionsSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
+      {/* 3. EMPTY SECTION 3 */}
+      <SectionThree />
 
-        {/* 3. Backtested Analytics & Granular Commodity Grades Section */}
-        <BacktestedAnalyticsSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-        {/* 4. Real-Time Cargo Flows & Voyage Analytics Calculator Preview */}
-        <VoyageAnalyticsPreviewSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-        {/* 5. 3 Strategic Action Pillars (Monitor, Understand, Act) */}
-        <ThreePillarsSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-        {/* 6. SARIMA Time-Series Forecasting Engine */}
-        <ForecastingSection onEnterApp={onEnterApp} />
-
-        {/* 7. Interactive Vessel-Port Feasibility Validator */}
-        <VesselIntelligenceSection onEnterApp={onEnterApp} />
-
-        {/* 8. 7 East Coast Indian Ports Directory */}
-        <PortIntelligenceSection onEnterApp={onEnterApp} />
-
-        {/* 9. Industries & Stakeholders We Serve */}
-        <IndustriesGridSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-        {/* 10. Integrations Hub: MCP, APIs, Excel Add-in, Cloud Warehouse */}
-        <IntegrationsHubSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-        {/* 11. Customer Perspectives & Social Proof */}
-        <TestimonialsSection onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-        {/* 12. Landed Cost & Monsoon Risk Framework */}
-        <CostAndRiskSection onEnterApp={onEnterApp} />
-
-        {/* 13. Data Governance & SIH 2026 Disclosure */}
-        <TechnologyAndTransparencySection onEnterApp={onEnterApp} />
-      </main>
-
-      {/* 14. Mega-Footer with Pre-Footer CTA */}
-      <LandingFooter onEnterApp={onEnterApp} onOpenDemo={handleOpenDemo} />
-
-      {/* Demo Request Modal */}
-      <DemoRequestModal
-        isOpen={isDemoModalOpen}
-        onClose={handleCloseDemo}
-        onEnterApp={onEnterApp}
+      {/* 4. EXISTING FOOTER */}
+      <LandingFooter
+        onEnterApp={() => onNavigate?.('dashboard')}
+        onOpenLogin={onOpenLogin}
       />
     </div>
   );

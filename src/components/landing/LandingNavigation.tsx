@@ -1,274 +1,412 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Anchor,
+  ChevronDown,
+  ArrowRight,
   Menu,
   X,
-  ArrowRight,
-  ChevronDown,
-  Sparkles,
-  Layers,
-  Ship,
-  TrendingUp,
-  Cpu,
-  Building,
+  CreditCard,
+  BarChart3,
   Zap,
-  Globe2,
-  FileSpreadsheet,
-  Code2
+  Shield,
+  Layers,
+  FileText,
+  HelpCircle,
+  BookOpen,
+  Building2,
+  Users,
+  Briefcase
 } from 'lucide-react';
 
 interface LandingNavigationProps {
-  onEnterApp: () => void;
-  onOpenLogin: () => void;
-  onOpenDemo: () => void;
+  onEnterApp?: () => void;
+  onOpenLogin?: () => void;
 }
 
 export const LandingNavigation: React.FC<LandingNavigationProps> = ({
   onEnterApp,
-  onOpenLogin,
-  onOpenDemo
+  onOpenLogin
 }) => {
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleDropdownToggle = (menuName: string) => {
+    setActiveDropdown(activeDropdown === menuName ? null : menuName);
+  };
+
+  const handleAction = (action?: () => void) => {
+    setMobileMenuOpen(false);
+    setActiveDropdown(null);
+    if (action) action();
+  };
 
   return (
     <header
       id="landing-navbar"
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 transition-all duration-200 ${
         isScrolled
-          ? 'bg-[#071522]/95 backdrop-blur-md border-b border-[#20384C] shadow-xl'
-          : 'bg-[#071522]/85 backdrop-blur-xs border-b border-[#20384C]/60'
+          ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs'
+          : 'bg-white border-b border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-        {/* Left: PortIN Brand */}
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
+        {/* Brand Logo & Name */}
         <div className="flex items-center gap-8">
-          <a href="#" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-[8px] bg-[#0D1B2A] border border-[#E05252] text-[#E05252] flex items-center justify-center transition-all group-hover:scale-105 shadow-md">
-              <Anchor className="w-5 h-5 text-[#E05252]" />
+          <button
+            id="nav-brand-logo"
+            onClick={() => handleAction(onEnterApp)}
+            className="flex items-center gap-2.5 group cursor-pointer text-left"
+          >
+            <div className="w-9 h-9 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-bold text-base tracking-tight shadow-xs group-hover:bg-neutral-800 transition">
+              <span className="font-mono text-emerald-400">P</span>
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[22px] text-white tracking-tight font-sans">
-                  port<span className="text-[#E05252]">in</span>
+            <div className="flex flex-col">
+              <span className="font-bold text-gray-900 text-[17px] tracking-tight leading-tight flex items-center gap-1.5">
+                PortIN
+                <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200/60">
+                  Fintech
                 </span>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#102337] text-[#12A6A6] border border-[#20384C]">
-                  MARITIME
-                </span>
-              </div>
+              </span>
+              <span className="text-[11px] text-gray-400 font-medium leading-none">
+                Financial Operations OS
+              </span>
             </div>
-          </a>
+          </button>
 
-          {/* Desktop Navigation Links with Dropdowns (Kpler Style) */}
-          <nav aria-label="Primary" className="hidden lg:flex items-center gap-6 text-[13.5px] font-medium text-[#9BAFBE]">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1 text-[14px] font-medium text-gray-600">
+            {/* Product Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setActiveDropdown('product')}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button
+                id="nav-btn-product"
+                onClick={() => handleDropdownToggle('product')}
+                className={`px-3.5 py-2 rounded-md hover:text-gray-900 transition flex items-center gap-1 cursor-pointer ${
+                  activeDropdown === 'product' ? 'text-gray-900 bg-gray-50' : ''
+                }`}
+              >
+                Product
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'product' ? 'rotate-180 text-gray-900' : 'text-gray-400'}`} />
+              </button>
+
+              {activeDropdown === 'product' && (
+                <div className="absolute top-full left-0 w-80 pt-2 z-50">
+                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-2.5 space-y-1">
+                    <a
+                      href="#product-overview"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <Layers className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Overview</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Unified liquidity & operations console</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#feature-grid"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <CreditCard className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Payments & Settlement</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Cross-border freight & treasury wires</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#analytics-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <BarChart3 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Analytics & P&L</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Real-time margin and cost attribution</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#automation-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <Zap className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Automation Engine</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Zero-touch invoice & ledger matching</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Solutions Dropdown */}
             <div
               className="relative"
               onMouseEnter={() => setActiveDropdown('solutions')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center gap-1 hover:text-white py-2 transition-colors cursor-pointer">
-                <span>Solutions</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+              <button
+                id="nav-btn-solutions"
+                onClick={() => handleDropdownToggle('solutions')}
+                className={`px-3.5 py-2 rounded-md hover:text-gray-900 transition flex items-center gap-1 cursor-pointer ${
+                  activeDropdown === 'solutions' ? 'text-gray-900 bg-gray-50' : ''
+                }`}
+              >
+                Solutions
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'solutions' ? 'rotate-180 text-gray-900' : 'text-gray-400'}`} />
               </button>
 
               {activeDropdown === 'solutions' && (
-                <div className="absolute top-full left-0 w-80 p-3 rounded-[8px] bg-[#0D1B2A] border border-[#20384C] shadow-2xl space-y-1 animate-fade-in">
-                  <a
-                    href="#solutions"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2.5 rounded-[6px] hover:bg-[#071522] flex items-start gap-2.5 transition"
-                  >
-                    <Layers className="w-4 h-4 text-[#E05252] shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-xs text-white block">Fundamental Intelligence</strong>
-                      <span className="text-[11px] text-[#9BAFBE]">Cargo flows, draft telemetry & ports</span>
-                    </div>
-                  </a>
-                  <a
-                    href="#forecasting"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2.5 rounded-[6px] hover:bg-[#071522] flex items-start gap-2.5 transition"
-                  >
-                    <TrendingUp className="w-4 h-4 text-[#12A6A6] shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-xs text-white block">Derived Insights</strong>
-                      <span className="text-[11px] text-[#9BAFBE]">SARIMA rate forecast & optimal windows</span>
-                    </div>
-                  </a>
-                  <a
-                    href="#voyage-analytics"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2.5 rounded-[6px] hover:bg-[#071522] flex items-start gap-2.5 transition"
-                  >
-                    <Ship className="w-4 h-4 text-[#20B26B] shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-xs text-white block">Decision Tools</strong>
-                      <span className="text-[11px] text-[#9BAFBE]">Voyage calculator & port draft validator</span>
-                    </div>
-                  </a>
+                <div className="absolute top-full left-0 w-76 pt-2 z-50">
+                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-2.5 space-y-1">
+                    <a
+                      href="#feature-grid"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Trading & Chartering Houses</div>
+                        <div className="text-[12px] text-gray-500 font-normal">High-volume dry bulk & freight desks</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#forecast-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <Users className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Corporate Finance Teams</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Automated treasury & multi-currency P&L</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#security-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <Briefcase className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Global Enterprises</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Dual-quorum security & ERP sync</div>
+                      </div>
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Industries Dropdown */}
+            {/* Resources Dropdown */}
             <div
               className="relative"
-              onMouseEnter={() => setActiveDropdown('industries')}
+              onMouseEnter={() => setActiveDropdown('resources')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center gap-1 hover:text-white py-2 transition-colors cursor-pointer">
-                <span>Industries</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+              <button
+                id="nav-btn-resources"
+                onClick={() => handleDropdownToggle('resources')}
+                className={`px-3.5 py-2 rounded-md hover:text-gray-900 transition flex items-center gap-1 cursor-pointer ${
+                  activeDropdown === 'resources' ? 'text-gray-900 bg-gray-50' : ''
+                }`}
+              >
+                Resources
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'resources' ? 'rotate-180 text-gray-900' : 'text-gray-400'}`} />
               </button>
 
-              {activeDropdown === 'industries' && (
-                <div className="absolute top-full left-0 w-72 p-3 rounded-[8px] bg-[#0D1B2A] border border-[#20384C] shadow-2xl space-y-1 animate-fade-in">
-                  <a
-                    href="#industries"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2 rounded-[6px] hover:bg-[#071522] block text-xs text-white"
-                  >
-                    Steel & Metal Producers
-                  </a>
-                  <a
-                    href="#industries"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2 rounded-[6px] hover:bg-[#071522] block text-xs text-white"
-                  >
-                    Power Utilities & Gencos
-                  </a>
-                  <a
-                    href="#industries"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2 rounded-[6px] hover:bg-[#071522] block text-xs text-white"
-                  >
-                    Dry Bulk Charterers & Traders
-                  </a>
-                  <a
-                    href="#industries"
-                    onClick={() => setActiveDropdown(null)}
-                    className="p-2 rounded-[6px] hover:bg-[#071522] block text-xs text-white"
-                  >
-                    Port Authorities & Terminals
-                  </a>
+              {activeDropdown === 'resources' && (
+                <div className="absolute top-full left-0 w-72 pt-2 z-50">
+                  <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-2.5 space-y-1">
+                    <a
+                      href="#faq-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <FileText className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Documentation & API</div>
+                        <div className="text-[12px] text-gray-500 font-normal">REST endpoints & webhook specs</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#faq-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Methodology & SARIMA Guides</div>
+                        <div className="text-[12px] text-gray-500 font-normal">Quantitative forecasting algorithms</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href="#faq-section"
+                      onClick={() => setActiveDropdown(null)}
+                      className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition group"
+                    >
+                      <div className="p-2 rounded-md bg-gray-50 text-gray-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                        <HelpCircle className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[13.5px] font-semibold text-gray-900">Help & Support</div>
+                        <div className="text-[12px] text-gray-500 font-normal">24/7 dedicated finance desk support</div>
+                      </div>
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
 
-            <a href="#backtest-analytics" className="hover:text-white transition-colors">
-              Analytics
-            </a>
-            <a href="#port-intelligence" className="hover:text-white transition-colors">
-              East Coast Ports
-            </a>
-            <a href="#integrations" className="hover:text-white transition-colors">
-              Developers & MCP
+            {/* Direct Pricing Link */}
+            <a
+              id="nav-link-pricing"
+              href="#faq-section"
+              className="px-3.5 py-2 rounded-md hover:text-gray-900 transition"
+            >
+              Pricing
             </a>
           </nav>
         </div>
 
-        {/* Right Actions: Login & Red "Request a demo" (Kpler Style) */}
-        <div className="hidden sm:flex items-center gap-4">
+        {/* Right Action Buttons */}
+        <div className="hidden sm:flex items-center gap-3">
           <button
-            onClick={onOpenLogin}
-            className="text-[13.5px] text-[#9BAFBE] hover:text-white font-medium px-3 py-1.5 transition-colors cursor-pointer"
+            id="nav-btn-login"
+            onClick={() => handleAction(onOpenLogin)}
+            className="px-4 py-2 text-[14px] font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition cursor-pointer"
           >
-            Login
-          </button>
-
-          <button
-            onClick={onOpenDemo}
-            className="px-5 py-2.5 rounded-[6px] bg-[#E05252] hover:bg-[#C94C4C] text-white text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#E05252]/20 flex items-center gap-2 cursor-pointer"
-          >
-            <span>Request a demo</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Mobile menu trigger */}
-        <div className="flex lg:hidden items-center gap-2">
-          <button
-            onClick={onOpenDemo}
-            className="px-3 py-1.5 rounded bg-[#E05252] text-white text-xs font-bold uppercase"
-          >
-            Demo
+            Log in
           </button>
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded bg-[#0D1B2A] border border-[#20384C] text-[#9BAFBE]"
+            id="nav-btn-cta-primary"
+            onClick={() => handleAction(onEnterApp)}
+            className="px-4.5 py-2 text-[14px] font-semibold text-white bg-neutral-900 hover:bg-neutral-800 rounded-lg shadow-xs hover:shadow-sm transition flex items-center gap-1.5 cursor-pointer"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            Launch Platform
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Mobile Hamburger Button */}
+        <button
+          id="nav-btn-mobile-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+          aria-label="Toggle navigation menu"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0D1B2A] border-b border-[#20384C] px-5 py-4 space-y-3 shadow-2xl">
-          <a
-            href="#solutions"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm text-[#9BAFBE] hover:text-white py-1.5"
-          >
-            Solutions & Intelligence
-          </a>
-          <a
-            href="#backtest-analytics"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm text-[#9BAFBE] hover:text-white py-1.5"
-          >
-            Backtested Models
-          </a>
-          <a
-            href="#voyage-analytics"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm text-[#9BAFBE] hover:text-white py-1.5"
-          >
-            Voyage Calculator
-          </a>
-          <a
-            href="#port-intelligence"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm text-[#9BAFBE] hover:text-white py-1.5"
-          >
-            7 East Coast Ports
-          </a>
-          <a
-            href="#integrations"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm text-[#9BAFBE] hover:text-white py-1.5"
-          >
-            API & MCP Integrations
-          </a>
-
-          <div className="pt-3 border-t border-[#20384C] flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenLogin();
-              }}
-              className="w-full py-2.5 rounded bg-[#071522] border border-[#20384C] text-sm text-white font-medium"
+        <div className="md:hidden bg-white border-b border-gray-200 px-4 pt-3 pb-6 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="space-y-1">
+            <a
+              href="#product-overview"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
             >
-              Login to Terminal
+              Product Overview
+            </a>
+            <a
+              href="#feature-grid"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
+            >
+              Features & Settlement
+            </a>
+            <a
+              href="#analytics-section"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
+            >
+              Analytics Dashboard
+            </a>
+            <a
+              href="#forecast-section"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
+            >
+              Cash Flow Forecasting
+            </a>
+            <a
+              href="#transactions-section"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
+            >
+              Transaction Ledger
+            </a>
+            <a
+              href="#security-section"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
+            >
+              Security & Compliance
+            </a>
+            <a
+              href="#faq-section"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-800 rounded-lg hover:bg-gray-50"
+            >
+              FAQ & Pricing
+            </a>
+          </div>
+
+          <div className="pt-3 border-t border-gray-100 flex flex-col gap-2.5">
+            <button
+              onClick={() => handleAction(onOpenLogin)}
+              className="w-full py-2.5 px-4 text-center font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition"
+            >
+              Log in
             </button>
             <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenDemo();
-              }}
-              className="w-full py-2.5 rounded bg-[#E05252] text-white text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2"
+              onClick={() => handleAction(onEnterApp)}
+              className="w-full py-2.5 px-4 text-center font-semibold text-white bg-neutral-900 hover:bg-neutral-800 rounded-lg shadow-xs transition flex items-center justify-center gap-2"
             >
-              <span>Request a Demo</span>
+              Launch Platform
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

@@ -55,7 +55,7 @@ import {
 } from './data/referenceData';
 
 const MainAppContent: React.FC = () => {
-  const { user, isAuthenticated, isLoading: authLoading, login } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, login, logout } = useAuth();
   const { showToast } = useToast();
   const { theme } = useTheme();
 
@@ -63,6 +63,7 @@ const MainAppContent: React.FC = () => {
 
   // Navigation & Public Landing State
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
+  const [intendedTab, setIntendedTab] = useState<NavTab | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [showLoginPageModal, setShowLoginPageModal] = useState<boolean>(false);
   
@@ -86,8 +87,22 @@ const MainAppContent: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated) {
       loadInitialData();
+      setShowLoginPageModal(false);
+      if (intendedTab) {
+        setCurrentTab(intendedTab);
+        setIntendedTab(null);
+      }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, intendedTab]);
+
+  const handleNavigateFromLanding = (tab: NavTab) => {
+    if (!isAuthenticated) {
+      setIntendedTab(tab);
+      setShowLoginPageModal(true);
+    } else {
+      setCurrentTab(tab);
+    }
+  };
 
   const loadInitialData = async () => {
     try {
@@ -223,8 +238,13 @@ const MainAppContent: React.FC = () => {
 
     return (
       <LandingPage
-        onEnterApp={handleQuickDemoEnter}
-        onOpenLogin={() => setShowLoginPageModal(true)}
+        onNavigate={handleNavigateFromLanding}
+        onOpenLogin={() => {
+          setIntendedTab(null);
+          setShowLoginPageModal(true);
+        }}
+        onLogout={logout}
+        isAuthenticated={isAuthenticated}
       />
     );
   }

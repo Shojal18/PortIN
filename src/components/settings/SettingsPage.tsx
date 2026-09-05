@@ -7,17 +7,26 @@ import {
   RefreshCw,
   Cpu,
   Palette,
-  DollarSign
+  DollarSign,
+  Sparkles,
+  Check
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../layout/Toast';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme, PORTIN_GRADIENT_PRESETS } from '../../context/ThemeContext';
 import { api } from '../../services/api';
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
-  const { theme, setTheme, currencyPreference, setCurrencyPreference } = useTheme();
+  const {
+    theme,
+    setTheme,
+    currencyPreference,
+    setCurrencyPreference,
+    gradientPreset,
+    setGradientPreset,
+  } = useTheme();
   const isLight = theme === 'light';
 
   const [, setModelStatus] = useState<any>(null);
@@ -46,7 +55,7 @@ export const SettingsPage: React.FC = () => {
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('success', 'Settings Saved', 'System preferences and configuration updated.');
+    showToast('success', 'Settings Saved', 'System preferences and appearance configuration updated.');
   };
 
   const cardBorder = isLight ? 'border-[#E4E4E7]' : 'border-[#D0D0D0]';
@@ -68,7 +77,7 @@ export const SettingsPage: React.FC = () => {
             System Settings & Preferences
           </h2>
           <p className={`text-[12.5px] ${textMuted} mt-0.5`}>
-            Default currency preferences, chartering credentials, decision thresholds, and ML diagnostics.
+            Theme appearance, PortIN color gradient presets, default currency, and operational rules.
           </p>
         </div>
 
@@ -82,99 +91,140 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       <form onSubmit={handleSaveSettings} className="space-y-4">
-        {/* Panel 1: Appearance & Theme Selector */}
+        {/* Panel 1: Appearance & Color Gradient */}
         <div className={`bg-white rounded-[6px] border ${cardBorder} p-4 sm:p-5`}>
           <div className={`flex items-center justify-between pb-3 border-b ${cardBorder}`}>
             <div className="flex items-center gap-2">
               <Palette className={`w-4 h-4 ${textTitle}`} />
               <h3 className={`font-semibold text-[13.5px] uppercase tracking-wider ${textTitle}`}>
-                Visual Theme Archetype
+                Appearance & Color Gradient
               </h3>
             </div>
             <span className={`text-[11px] font-mono ${textSub}`}>
-              Session Preference
+              Global Theme Tokens
             </span>
           </div>
 
-          <p className={`text-xs ${textMuted} mt-2.5 mb-3 leading-relaxed`}>
-            Select the interface display style. Switch between the soft layered Cursor-inspired developer theme and the structured workspace.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* Standard B&W Prototype Option (Cursor-inspired soft grayscale) */}
-            <div
-              id="theme-option-light"
-              onClick={() => setTheme('light')}
-              className={`p-3.5 rounded-[5px] border transition cursor-pointer flex flex-col justify-between ${
-                theme === 'light'
-                  ? isLight
-                    ? 'bg-[#F8F8F9] border-[#18181B] ring-1 ring-[#18181B]'
-                    : 'bg-[#F9FAFB] border-black ring-1 ring-black'
-                  : 'bg-white border-[#E4E4E7] hover:border-gray-400'
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    isLight ? 'border-[#18181B]' : 'border-black'
-                  }`}>
-                    {theme === 'light' && (
-                      <div className={`w-2 h-2 rounded-full ${isLight ? 'bg-[#18181B]' : 'bg-black'}`} />
-                    )}
-                  </div>
-                  <div>
-                    <h4 className={`font-semibold text-[13px] ${isLight ? 'text-[#18181B]' : 'text-black'}`}>
-                      Monochrome Clean (Prototype)
-                    </h4>
-                    <p className={`text-[11px] ${textSub}`}>
-                      Cursor-inspired soft grayscale, light-gray sidebar, layered off-white surfaces
-                    </p>
-                  </div>
-                </div>
+          <div className="mt-4 space-y-4">
+            {/* Subsection: Color Gradient Presets */}
+            <div>
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#52796A]" />
+                <h4 className={`font-semibold text-[13px] ${textTitle}`}>
+                  PortIN Color Gradient
+                </h4>
               </div>
+              <p className={`text-xs ${textMuted} mb-3 leading-relaxed`}>
+                Select the active PortIN color gradient preset. Updates brand highlights, buttons, indicators, and fleet operational panels globally.
+              </p>
 
-              <div className={`flex items-center gap-1.5 mt-3 pt-2.5 border-t ${cardBorder}`}>
-                <div className="w-4 h-4 rounded bg-[#F4F4F5] border border-[#E4E4E7]" title="Off-White Page #F4F4F5" />
-                <div className="w-4 h-4 rounded bg-[#EAEAEB] border border-[#E4E4E7]" title="Sidebar Gray #EAEAEB" />
-                <div className="w-4 h-4 rounded bg-white border border-[#E4E4E7]" title="Card White #FFFFFF" />
-                <div className="w-4 h-4 rounded bg-[#DCDCE0] border border-[#E4E4E7]" title="Active Tab #DCDCE0" />
-                <div className="w-4 h-4 rounded bg-[#18181B]" title="Charcoal #18181B" />
-                <span className={`text-[10px] font-mono ${textSub} ml-auto`}>
-                  {theme === 'light' ? 'Active' : 'Select'}
-                </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                {PORTIN_GRADIENT_PRESETS.map((preset) => {
+                  const isSelected = gradientPreset === preset.id;
+                  return (
+                    <div
+                      key={preset.id}
+                      id={`gradient-preset-${preset.id}`}
+                      onClick={() => setGradientPreset(preset.id)}
+                      className={`p-3 rounded-[6px] border transition cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-[#52796A] bg-[#F4F6F4] ring-1 ring-[#52796A]'
+                          : `bg-white ${cardBorder} hover:border-gray-400`
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`font-semibold text-[12px] ${isSelected ? 'text-[#212528]' : textTitle}`}>
+                          {preset.name}
+                        </span>
+                        {isSelected ? (
+                          <span className="w-4 h-4 rounded-full bg-[#52796A] text-white flex items-center justify-center">
+                            <Check className="w-2.5 h-2.5" />
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-mono text-gray-400">Select</span>
+                        )}
+                      </div>
+
+                      {/* Visual Gradient Bar Preview */}
+                      <div
+                        className="w-full h-5 rounded-[4px] border border-black/10 shadow-xs mb-2"
+                        style={{ background: preset.gradientCss }}
+                      />
+
+                      <div className="flex items-center justify-between text-[10px] font-mono text-gray-500">
+                        <span>{preset.description}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Dark Prototype Option */}
-            <div
-              id="theme-option-dark"
-              onClick={() => setTheme('dark')}
-              className={`p-3.5 rounded-[5px] border transition cursor-pointer flex flex-col justify-between ${
-                theme === 'dark'
-                  ? 'bg-gray-100 border-black ring-1 ring-black'
-                  : `bg-white ${cardBorder} hover:border-gray-400`
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 rounded-full border border-black flex items-center justify-center">
-                    {theme === 'dark' && <div className="w-2 h-2 rounded-full bg-black" />}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-black text-[13px]">High-Contrast Workspace</h4>
-                    <p className="text-gray-500 text-[11px]">Structured monochrome layout</p>
+            {/* Subsection: Visual Theme Archetype */}
+            <div className="pt-3 border-t border-gray-100">
+              <h4 className={`font-semibold text-[13px] ${textTitle} mb-1`}>
+                Base Workspace Contrast
+              </h4>
+              <p className={`text-xs ${textMuted} mb-3 leading-relaxed`}>
+                Switch between the soft layered developer theme and the high-contrast structured workspace.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Standard B&W Prototype Option (Cursor-inspired soft grayscale) */}
+                <div
+                  id="theme-option-light"
+                  onClick={() => setTheme('light')}
+                  className={`p-3.5 rounded-[5px] border transition cursor-pointer flex flex-col justify-between ${
+                    theme === 'light'
+                      ? isLight
+                        ? 'bg-[#F8F8F9] border-[#18181B] ring-1 ring-[#18181B]'
+                        : 'bg-[#F9FAFB] border-black ring-1 ring-black'
+                      : 'bg-white border-[#E4E4E7] hover:border-gray-400'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        isLight ? 'border-[#18181B]' : 'border-black'
+                      }`}>
+                        {theme === 'light' && (
+                          <div className={`w-2 h-2 rounded-full ${isLight ? 'bg-[#18181B]' : 'bg-black'}`} />
+                        )}
+                      </div>
+                      <div>
+                        <h4 className={`font-semibold text-[13px] ${isLight ? 'text-[#18181B]' : 'text-black'}`}>
+                          Monochrome Clean (Prototype)
+                        </h4>
+                        <p className={`text-[11px] ${textSub}`}>
+                          Cursor-inspired soft grayscale, light-gray sidebar, layered off-white surfaces
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-gray-200">
-                <div className="w-4 h-4 rounded bg-white border border-[#D0D0D0]" title="White #FFFFFF" />
-                <div className="w-4 h-4 rounded bg-gray-100 border border-gray-300" title="Gray #F3F4F6" />
-                <div className="w-4 h-4 rounded bg-gray-300" title="Border #D0D0D0" />
-                <div className="w-4 h-4 rounded bg-black" title="Black #000000" />
-                <span className="text-[10px] font-mono text-gray-500 ml-auto">
-                  {theme === 'dark' ? 'Active' : 'Select'}
-                </span>
+                {/* Dark Prototype Option */}
+                <div
+                  id="theme-option-dark"
+                  onClick={() => setTheme('dark')}
+                  className={`p-3.5 rounded-[5px] border transition cursor-pointer flex flex-col justify-between ${
+                    theme === 'dark'
+                      ? 'bg-gray-100 border-black ring-1 ring-black'
+                      : `bg-white ${cardBorder} hover:border-gray-400`
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-4 h-4 rounded-full border border-black flex items-center justify-center">
+                        {theme === 'dark' && <div className="w-2 h-2 rounded-full bg-black" />}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-black text-[13px]">High-Contrast Workspace</h4>
+                        <p className="text-gray-500 text-[11px]">Structured monochrome layout</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -3,12 +3,80 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export type AppTheme = 'dark' | 'light';
 export type AppCurrency = 'USD' | 'INR';
 
+export type PortINGradientPreset =
+  | 'portin-primary'
+  | 'portin-dark'
+  | 'portin-soft'
+  | 'portin-neutral'
+  | 'portin-full';
+
+export interface GradientPresetConfig {
+  id: PortINGradientPreset;
+  name: string;
+  description: string;
+  stops: string[];
+  gradientCss: string;
+  primary: string;
+  secondary: string;
+}
+
+export const PORTIN_GRADIENT_PRESETS: GradientPresetConfig[] = [
+  {
+    id: 'portin-primary',
+    name: 'PortIN Primary',
+    description: 'Primary green to soft muted green (Default)',
+    stops: ['#52796A', '#BAC5AC'],
+    gradientCss: 'linear-gradient(135deg, #52796A 0%, #BAC5AC 100%)',
+    primary: '#52796A',
+    secondary: '#BAC5AC',
+  },
+  {
+    id: 'portin-dark',
+    name: 'PortIN Dark',
+    description: 'Deep charcoal to primary green',
+    stops: ['#212528', '#52796A'],
+    gradientCss: 'linear-gradient(135deg, #212528 0%, #52796A 100%)',
+    primary: '#52796A',
+    secondary: '#212528',
+  },
+  {
+    id: 'portin-soft',
+    name: 'PortIN Soft',
+    description: 'Light neutral to soft muted green',
+    stops: ['#E5E5E5', '#BAC5AC'],
+    gradientCss: 'linear-gradient(135deg, #E5E5E5 0%, #BAC5AC 100%)',
+    primary: '#52796A',
+    secondary: '#BAC5AC',
+  },
+  {
+    id: 'portin-neutral',
+    name: 'PortIN Neutral',
+    description: 'Soft neutral to light neutral',
+    stops: ['#DFDFDF', '#E5E5E5'],
+    gradientCss: 'linear-gradient(135deg, #DFDFDF 0%, #E5E5E5 100%)',
+    primary: '#52796A',
+    secondary: '#DFDFDF',
+  },
+  {
+    id: 'portin-full',
+    name: 'PortIN Full Spectrum',
+    description: 'Five-tone palette spectrum blend',
+    stops: ['#212528', '#52796A', '#BAC5AC', '#E5E5E5', '#DFDFDF'],
+    gradientCss: 'linear-gradient(135deg, #212528 0%, #52796A 25%, #BAC5AC 50%, #E5E5E5 75%, #DFDFDF 100%)',
+    primary: '#52796A',
+    secondary: '#BAC5AC',
+  },
+];
+
 interface ThemeContextType {
   theme: AppTheme;
   setTheme: (theme: AppTheme) => void;
   currencyPreference: AppCurrency;
   setCurrencyPreference: (currency: AppCurrency) => void;
   toggleTheme: () => void;
+  gradientPreset: PortINGradientPreset;
+  setGradientPreset: (preset: PortINGradientPreset) => void;
+  activeGradientConfig: GradientPresetConfig;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -23,6 +91,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const saved = localStorage.getItem('freightiq_currency');
     return (saved === 'INR' || saved === 'USD') ? saved : 'USD';
   });
+
+  const [gradientPreset, setGradientPresetState] = useState<PortINGradientPreset>(() => {
+    const saved = localStorage.getItem('portin_active_gradient');
+    const valid = PORTIN_GRADIENT_PRESETS.some(p => p.id === saved);
+    return valid ? (saved as PortINGradientPreset) : 'portin-primary';
+  });
+
+  const activeGradientConfig =
+    PORTIN_GRADIENT_PRESETS.find(p => p.id === gradientPreset) || PORTIN_GRADIENT_PRESETS[0];
 
   useEffect(() => {
     localStorage.setItem('freightiq_theme', theme);
@@ -40,6 +117,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('freightiq_currency', currencyPreference);
   }, [currencyPreference]);
 
+  useEffect(() => {
+    localStorage.setItem('portin_active_gradient', gradientPreset);
+    const root = document.documentElement;
+    root.setAttribute('data-gradient', gradientPreset);
+    root.style.setProperty('--portin-primary', activeGradientConfig.primary);
+    root.style.setProperty('--portin-secondary', activeGradientConfig.secondary);
+    root.style.setProperty('--portin-dark', '#212528');
+    root.style.setProperty('--portin-surface', '#E5E5E5');
+    root.style.setProperty('--portin-border', '#DFDFDF');
+    root.style.setProperty('--portin-gradient', activeGradientConfig.gradientCss);
+  }, [gradientPreset, activeGradientConfig]);
+
   const setTheme = (newTheme: AppTheme) => {
     setThemeState(newTheme);
   };
@@ -52,6 +141,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCurrencyPreferenceState(currency);
   };
 
+  const setGradientPreset = (preset: PortINGradientPreset) => {
+    setGradientPresetState(preset);
+  };
+
   return (
     <ThemeContext.Provider
       value={{
@@ -59,7 +152,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setTheme,
         currencyPreference,
         setCurrencyPreference,
-        toggleTheme
+        toggleTheme,
+        gradientPreset,
+        setGradientPreset,
+        activeGradientConfig,
       }}
     >
       {children}
@@ -74,3 +170,4 @@ export const useTheme = (): ThemeContextType => {
   }
   return context;
 };
+

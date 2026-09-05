@@ -14,30 +14,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    // Default demo user initialized for instant hackathon accessibility
-    return {
-      id: 'usr-demo-01',
-      name: 'Capt. Samarth R.',
-      email: 'manager@freightiq.demo',
-      role: 'Chief Logistics & Chartering Manager',
-      organization: 'Bharat East Bulk Logistics Operations',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=128&auto=format&fit=crop&q=80'
-    };
-  });
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('freightiq_token') || 'demo-jwt-token');
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('portin_auth_token'));
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const storedToken = localStorage.getItem('freightiq_token');
+      const storedToken = localStorage.getItem('portin_auth_token');
       if (storedToken) {
         try {
           const res = await api.getCurrentUser();
           setUser(res.user);
           setToken(storedToken);
         } catch (e) {
-          console.warn('Session check failed, maintaining demo session:', e);
+          // If session expired or invalid
+          localStorage.removeItem('portin_auth_token');
+          setUser(null);
+          setToken(null);
         }
       }
     };
@@ -48,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const res = await api.login(email, password);
-      localStorage.setItem('freightiq_token', res.token);
+      localStorage.setItem('portin_auth_token', res.token);
       setToken(res.token);
       setUser(res.user);
     } finally {
@@ -57,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem('freightiq_token');
+    localStorage.removeItem('portin_auth_token');
     setToken(null);
     setUser(null);
   };
@@ -85,3 +78,4 @@ export const useAuth = () => {
   }
   return context;
 };
+
