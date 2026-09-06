@@ -3,7 +3,11 @@ import { Anchor, Lock, Mail, ArrowRight, AlertCircle, Loader2 } from 'lucide-rea
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../layout/Toast';
 
-export const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  onLoginSuccess?: () => void;
+}
+
+export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const { login, isLoading } = useAuth();
   const { showToast } = useToast();
 
@@ -23,6 +27,9 @@ export const LoginPage: React.FC = () => {
     try {
       await login(email, password);
       showToast('success', 'Welcome, Capt. Samarth', 'Signed in to PortIN Prototype.');
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
     } catch (err: any) {
       setErrorMsg(err.message || 'Invalid credentials. Use demo account.');
       showToast('error', 'Login Failed', err.message);

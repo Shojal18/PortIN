@@ -61,7 +61,8 @@ const MainAppContent: React.FC = () => {
 
   const isLight = theme === 'light';
 
-  // Navigation & Public Landing State
+  // Navigation & Public Landing State: Landing page is ALWAYS the initial entry point
+  const [isInsideApp, setIsInsideApp] = useState<boolean>(false);
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
   const [intendedTab, setIntendedTab] = useState<NavTab | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
@@ -87,13 +88,8 @@ const MainAppContent: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated) {
       loadInitialData();
-      setShowLoginPageModal(false);
-      if (intendedTab) {
-        setCurrentTab(intendedTab);
-        setIntendedTab(null);
-      }
     }
-  }, [isAuthenticated, intendedTab]);
+  }, [isAuthenticated]);
 
   const handleNavigateFromLanding = (tab: NavTab) => {
     if (!isAuthenticated) {
@@ -101,6 +97,16 @@ const MainAppContent: React.FC = () => {
       setShowLoginPageModal(true);
     } else {
       setCurrentTab(tab);
+      setIsInsideApp(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setShowLoginPageModal(false);
+    setIsInsideApp(true);
+    if (intendedTab) {
+      setCurrentTab(intendedTab);
+      setIntendedTab(null);
     }
   };
 
@@ -220,8 +226,8 @@ const MainAppContent: React.FC = () => {
     );
   }
 
-  // If not authenticated, render Public Showcase Landing Page with option to open Login
-  if (!isAuthenticated) {
+  // If not inside the terminal app, render Public Showcase Landing Page (or login modal)
+  if (!isInsideApp) {
     if (showLoginPageModal) {
       return (
         <div className="relative">
@@ -231,7 +237,7 @@ const MainAppContent: React.FC = () => {
           >
             ← Back to Overview
           </button>
-          <LoginPage />
+          <LoginPage onLoginSuccess={handleLoginSuccess} />
         </div>
       );
     }
@@ -243,7 +249,10 @@ const MainAppContent: React.FC = () => {
           setIntendedTab(null);
           setShowLoginPageModal(true);
         }}
-        onLogout={logout}
+        onLogout={() => {
+          logout();
+          setIsInsideApp(false);
+        }}
         isAuthenticated={isAuthenticated}
       />
     );
@@ -331,6 +340,7 @@ const MainAppContent: React.FC = () => {
         activeOrdersCount={activeOrdersCount}
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        onReturnToLanding={() => setIsInsideApp(false)}
       />
 
       {/* 2. Main Content Container */}
@@ -345,6 +355,7 @@ const MainAppContent: React.FC = () => {
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
           title={header.title}
           subtitle={header.subtitle}
+          onReturnToLanding={() => setIsInsideApp(false)}
         />
 
         {/* Scrollable View Area */}

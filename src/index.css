@@ -7,13 +7,14 @@
 :root,
 [data-theme="light"],
 .light {
-  /* PortIN Core Brand Color System */
+  /* PortIN Core Brand Color System - 4-tone palette */
   --portin-primary: #52796A;
   --portin-secondary: #BAC5AC;
   --portin-dark: #212528;
   --portin-surface: #E5E5E5;
   --portin-border: #DFDFDF;
-  --portin-gradient: linear-gradient(135deg, #52796A 0%, #BAC5AC 100%);
+  --portin-gradient: linear-gradient(135deg, #52796A 0%, #BAC5AC 35%, #212528 70%, #E5E5E5 100%);
+  --portin-gradient-h: linear-gradient(90deg, #52796A 0%, #BAC5AC 35%, #212528 70%, #E5E5E5 100%);
 
   --bg-page: #F4F4F5;          /* soft off-white / very light gray, NOT pure white */
   --bg-surface: #FFFFFF;       /* content surfaces: white */
@@ -125,3 +126,19 @@
   color: #FFFFFF;
   border: 1px solid #18181B;
 }
+
+/* 4-Color Single Source of Truth Utility Classes */
+.portin-gradient-bg {
+  background: linear-gradient(135deg, #52796A 0%, #BAC5AC 35%, #212528 70%, #E5E5E5 100%) !important;
+}
+
+.portin-gradient-h {
+  background: linear-gradient(90deg, #52796A 0%, #BAC5AC 35%, #212528 70%, #E5E5E5 100%) !important;
+}
+
+.portin-block-selection-indicator {
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, #52796A 0%, #BAC5AC 35%, #212528 70%, #E5E5E5 100%);
+}
+

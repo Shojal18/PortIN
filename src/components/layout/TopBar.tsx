@@ -11,6 +11,7 @@ interface TopBarProps {
   onOpenMobileSidebar?: () => void;
   title?: string;
   subtitle?: string;
+  onReturnToLanding?: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -19,7 +20,8 @@ export const TopBar: React.FC<TopBarProps> = ({
   unreadAlertsCount = 0,
   onOpenMobileSidebar,
   title: customTitle,
-  subtitle: customSubtitle
+  subtitle: customSubtitle,
+  onReturnToLanding
 }) => {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
@@ -166,7 +168,23 @@ export const TopBar: React.FC<TopBarProps> = ({
       </div>
 
       {/* Right: Primary Action, Alerts & User Profile */}
-      <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Landing Overview Button */}
+        {onReturnToLanding && (
+          <button
+            id="topbar-return-landing-btn"
+            onClick={onReturnToLanding}
+            className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-[5px] text-[12px] font-medium transition cursor-pointer border ${
+              isLight
+                ? 'bg-white hover:bg-[#EAEAEB] text-[#3F3F46] border-[#E4E4E7]'
+                : 'bg-white hover:bg-gray-100 text-gray-700 border-[#D0D0D0]'
+            }`}
+            title="View Public Landing Page"
+          >
+            <span>Overview</span>
+          </button>
+        )}
+
         {/* Quick New Forecast Action */}
         {currentTab !== 'new-forecast' && currentTab !== 'forecast-result' && (
           <button

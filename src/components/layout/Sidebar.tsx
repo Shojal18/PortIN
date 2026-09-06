@@ -24,6 +24,7 @@ interface SidebarProps {
   activeOrdersCount?: number;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
+  onReturnToLanding?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,7 +33,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   unreadAlertsCount = 0,
   activeOrdersCount = 0,
   isOpenMobile = false,
-  onCloseMobile
+  onCloseMobile,
+  onReturnToLanding
 }) => {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
@@ -116,8 +118,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }`}
       >
         <div
-          onClick={() => handleNavClick('dashboard')}
+          onClick={() => {
+            if (onReturnToLanding) {
+              onReturnToLanding();
+            } else {
+              handleNavClick('dashboard');
+            }
+          }}
           className="flex items-center gap-3 cursor-pointer group"
+          title="Return to Public Overview / Landing Page"
         >
           <div className={`w-8.5 h-8.5 rounded-[5px] flex items-center justify-center shrink-0 ${
             isLight ? 'bg-[#18181B] text-white' : 'bg-black text-white'

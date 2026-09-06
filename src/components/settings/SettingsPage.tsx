@@ -118,43 +118,32 @@ export const SettingsPage: React.FC = () => {
                 Select the active PortIN color gradient preset. Updates brand highlights, buttons, indicators, and fleet operational panels globally.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              {/* Compact Block Selection Controls */}
+              <div className="flex flex-wrap items-center gap-2">
                 {PORTIN_GRADIENT_PRESETS.map((preset) => {
                   const isSelected = gradientPreset === preset.id;
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={preset.id}
                       id={`gradient-preset-${preset.id}`}
                       onClick={() => setGradientPreset(preset.id)}
-                      className={`p-3 rounded-[6px] border transition cursor-pointer flex flex-col justify-between ${
+                      className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-[4px] border text-xs font-mono transition-all cursor-pointer ${
                         isSelected
-                          ? 'border-[#52796A] bg-[#F4F6F4] ring-1 ring-[#52796A]'
-                          : `bg-white ${cardBorder} hover:border-gray-400`
+                          ? 'border-[#212528] bg-white text-[#212528] font-bold shadow-xs'
+                          : 'border-[#DFDFDF] bg-[#F8F9F8] hover:bg-[#E5E5E5] text-gray-700'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={`font-semibold text-[12px] ${isSelected ? 'text-[#212528]' : textTitle}`}>
-                          {preset.name}
-                        </span>
-                        {isSelected ? (
-                          <span className="w-4 h-4 rounded-full bg-[#52796A] text-white flex items-center justify-center">
-                            <Check className="w-2.5 h-2.5" />
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-mono text-gray-400">Select</span>
-                        )}
-                      </div>
-
-                      {/* Visual Gradient Bar Preview */}
-                      <div
-                        className="w-full h-5 rounded-[4px] border border-black/10 shadow-xs mb-2"
+                      {/* Compact Gradient Highlight Block Accent */}
+                      <span
+                        className="w-4 h-3 rounded-[2px] border border-black/10 shrink-0"
                         style={{ background: preset.gradientCss }}
                       />
-
-                      <div className="flex items-center justify-between text-[10px] font-mono text-gray-500">
-                        <span>{preset.description}</span>
-                      </div>
-                    </div>
+                      <span>{preset.name}</span>
+                      {isSelected && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#52796A]" />
+                      )}
+                    </button>
                   );
                 })}
               </div>
